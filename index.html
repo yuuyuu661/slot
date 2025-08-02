@@ -188,6 +188,8 @@
     }, { once: true });
   });
 });
+const API_BASE = "https://あなたのBot側Railwayドメイン";
+
 async function fetchSessionData() {
   const urlParams = new URLSearchParams(window.location.search);
   const sessionId = urlParams.get('session');
@@ -196,13 +198,14 @@ async function fetchSessionData() {
     return;
   }
 
-  try {
-    const response = await fetch(`/api/session?session=${sessionId}`);
+   try {
+    const response = await fetch(`${API_BASE}/api/session?session=${sessionId}`);
     if (!response.ok) {
       throw new Error("セッションが無効または期限切れです。");
     }
 
-    const data = await response.json();
+
+   const data = await response.json();
     coins = data.coins;
     coinsEl.textContent = coins;
     console.log("セッションデータ取得:", data);
@@ -444,4 +447,5 @@ function dropCoins(amount = 20) {
   </script>
 </body>
 </html>
+
 
