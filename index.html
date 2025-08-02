@@ -188,7 +188,32 @@
     }, { once: true });
   });
 });
-    
+async function fetchSessionData() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session');
+  if (!sessionId) {
+    alert("セッションIDが見つかりません。");
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/session?session=${sessionId}`);
+    if (!response.ok) {
+      throw new Error("セッションが無効または期限切れです。");
+    }
+
+    const data = await response.json();
+    coins = data.coins;
+    coinsEl.textContent = coins;
+    console.log("セッションデータ取得:", data);
+  } catch (err) {
+    alert("セッションの読み込みに失敗しました：" + err.message);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  fetchSessionData();
+});    
     function getRandomSymbol() {
       const total = symbolWeights.reduce((a, b) => a + b);
       let rand = Math.random() * total, acc = 0;
@@ -419,3 +444,4 @@ function dropCoins(amount = 20) {
   </script>
 </body>
 </html>
+
