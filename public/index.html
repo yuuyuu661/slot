@@ -200,7 +200,7 @@ async function fetchSessionData() {
   }
 
    try {
-    const response = await fetch(`${API_BASE}/api/session?session=${sessionId}`);
+    const response = await fetch(${API_BASE}/api/session?session=${sessionId});
     if (!response.ok) {
       throw new Error("セッションが無効または期限切れです。");
     }
@@ -435,7 +435,7 @@ function dropCoins(amount = 20) {
   }
 
   try {
-    const res = await fetch(`${API_BASE}/api/cashout`, {
+    const res = await fetch(${API_BASE}/api/cashout, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ session: sessionId, coins: coinsToCashout })
@@ -474,4 +474,3 @@ function dropCoins(amount = 20) {
   </script>
 </body>
 </html>
-
