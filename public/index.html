@@ -105,6 +105,7 @@
   <img src="images/payout_table.png" alt="ペイテーブル" id="payoutTable">
   <div class="slot-container" id="slotContainer"></div>
   <button id="start">スタート！</button>
+  <button id="cashoutBtn">清算</button>
   <div id="coinDisplay">所持コイン: <span id="coins">100</span></div>
 <div id="volumeControl" style="margin-top: 15px;">
   🔊 BGM音量: <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
@@ -424,6 +425,22 @@ function dropCoins(amount = 20) {
     }, 2000); // 消去
   }
 }
+     document.getElementById("cashoutBtn").addEventListener("click", async () => {
+    const sessionId = new URLSearchParams(window.location.search).get("session");
+    const coins = window.currentCoins || 0; // グローバルの残りコイン
+
+    try {
+      await fetch("/api/cashout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session: sessionId, coins: coins })
+      });
+      alert("清算が完了しました！");
+      window.close(); // ウィンドウを閉じる（ポップアップで開いている場合に限る）
+    } catch (err) {
+      alert("清算エラー");
+    }
+  });
     document.querySelectorAll('.stop-btn').forEach(btn => {
       btn.addEventListener('click', () => stopReel(+btn.dataset.index));
     });
@@ -447,6 +464,7 @@ function dropCoins(amount = 20) {
   </script>
 </body>
 </html>
+
 
 
 
