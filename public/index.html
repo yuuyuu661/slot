@@ -427,21 +427,23 @@ function dropCoins(amount = 20) {
   }
 }
      document.getElementById("cashoutBtn").addEventListener("click", async () => {
-    const sessionId = new URLSearchParams(window.location.search).get("session");
-    const coins = window.currentCoins || 0; // グローバルの残りコイン
+  const sessionId = new URLSearchParams(window.location.search).get("session");
+  const coinsToCashout = coins; // ← グローバル変数を直接参照
 
-    try {
-      await fetch("/api/cashout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session: sessionId, coins: coins })
-      });
-      alert("清算が完了しました！");
-      window.close(); // ウィンドウを閉じる（ポップアップで開いている場合に限る）
-    } catch (err) {
-      alert("清算エラー");
-    }
-  });
+  try {
+    const res = await fetch("/api/cashout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session: sessionId, coins: coinsToCashout })
+    });
+
+    if (!res.ok) throw new Error("サーバーエラー");
+
+    alert(`清算が完了しました！（${coinsToCashout} Spt）\nウィンドウを手動で閉じてください。`);
+  } catch (err) {
+    alert("清算エラー: " + err.message);
+  }
+});
     document.querySelectorAll('.stop-btn').forEach(btn => {
       btn.addEventListener('click', () => stopReel(+btn.dataset.index));
     });
@@ -465,6 +467,7 @@ function dropCoins(amount = 20) {
   </script>
 </body>
 </html>
+
 
 
 
