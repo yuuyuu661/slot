@@ -189,7 +189,7 @@
     }, { once: true });
   });
 });
-const API_BASE = "https://bo4-production.up.railway.app"; // ← Flaskの公開URLをここに変更
+const API_BASE = "https://bo4-production.up.railway.app";
 
 async function fetchSessionData() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -200,7 +200,7 @@ async function fetchSessionData() {
   }
 
    try {
-    const response = await fetch(${API_BASE}/api/session?session=${sessionId});
+    const response = await fetch(`${API_BASE}/api/session?session=${sessionId}`);
     if (!response.ok) {
       throw new Error("セッションが無効または期限切れです。");
     }
@@ -351,7 +351,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }, 100);
 
   coins += totalWin * (inBonus ? 2 : 1);
-  resultEl.textContent = results.map(r => 「${['上','中','下'][r.row]}段:${r.symbol}x${r.count}」).join(' / ') + （${totalWin}コイン）;
+  resultEl.textContent = results.map(r => `「${['上','中','下'][r.row]}段:${r.symbol}x${r.count}」`).join(' / ') + `（${totalWin}コイン）`;
 } else {
   setTimeout(() => {
     loseSound.currentTime = 0;
@@ -427,28 +427,20 @@ function dropCoins(amount = 20) {
 }
      document.getElementById("cashoutBtn").addEventListener("click", async () => {
   const sessionId = new URLSearchParams(window.location.search).get("session");
-  const coinsToCashout = coins; // ← グローバル変数
-
-  if (!sessionId) {
-    alert("セッションが無効です。URLに ?session=xxx が必要です。");
-    return;
-  }
+  const coinsToCashout = coins; // ← グローバル変数を直接参照
 
   try {
-    const res = await fetch(${API_BASE}/api/cashout, {
+    const res = await fetch("/api/cashout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ session: sessionId, coins: coinsToCashout })
     });
 
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData?.error || "サーバーエラー");
-    }
+    if (!res.ok) throw new Error("サーバーエラー");
 
-    alert(✅ 清算が完了しました！（${coinsToCashout} Spt）\nウィンドウを手動で閉じてください。);
+    alert(`清算が完了しました！（${coinsToCashout} Spt）\nウィンドウを手動で閉じてください。`);
   } catch (err) {
-    alert("❌ 清算エラー: " + err.message);
+    alert("清算エラー: " + err.message);
   }
 });
     document.querySelectorAll('.stop-btn').forEach(btn => {
