@@ -430,11 +430,11 @@ function dropCoins(amount = 20) {
   const coinsToCashout = coins; // ← グローバル変数を直接参照
 
   try {
-    const res = await fetch("/api/cashout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ session: sessionId, coins: coinsToCashout })
-    });
+    const res = await fetch("https://slot-production-be36.up.railway.app/api/cashout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ session: sessionId, coins: coins })
+});
 
     if (!res.ok) throw new Error("サーバーエラー");
 
@@ -466,6 +466,7 @@ function dropCoins(amount = 20) {
   </script>
 </body>
 </html>
+
 
 
 
