@@ -427,20 +427,36 @@ function dropCoins(amount = 20) {
 }
      document.getElementById("cashoutBtn").addEventListener("click", async () => {
   const sessionId = new URLSearchParams(window.location.search).get("session");
-  const coinsToCashout = coins; // ← グローバル変数を直接参照
+  const coinsToCashout = coins;
+  const cashoutBtn = document.getElementById("cashoutBtn");
+
+  if (!sessionId) {
+    alert("セッションが無効です。URLに ?session=xxx が必要です。");
+    return;
+  }
+
+  // 🔒 ボタンを一度だけ押せるように制御
+  cashoutBtn.disabled = true;
+  cashoutBtn.textContent = "送信中...";
 
   try {
-    const res = await fetch("/api/cashout", {
+    const res = await fetch(`${API_BASE}/api/cashout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ session: sessionId, coins: coinsToCashout })
     });
 
-    if (!res.ok) throw new Error("サーバーエラー");
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData?.error || "サーバーエラー");
+    }
 
-    alert(`清算が完了しました！（${coinsToCashout} Spt）\nウィンドウを手動で閉じてください。`);
+    alert(`✅ 清算が完了しました！（${coinsToCashout} Spt）\nウィンドウを手動で閉じてください。`);
+    cashoutBtn.textContent = "✅ 完了しました";
   } catch (err) {
-    alert("清算エラー: " + err.message);
+    alert("❌ 清算エラー: " + err.message);
+    cashoutBtn.disabled = false;
+    cashoutBtn.textContent = "清算";
   }
 });
     document.querySelectorAll('.stop-btn').forEach(btn => {
@@ -466,3 +482,4 @@ function dropCoins(amount = 20) {
   </script>
 </body>
 </html>
+
