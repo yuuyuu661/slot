@@ -411,6 +411,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }, 500);
   }
 }
+function getSessionIdFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("session");
+}
 function dropCoins(amount = 20) {
       for (let i = 0; i < amount; i++) {
         const coin = document.createElement("img");
@@ -466,6 +470,7 @@ function dropCoins(amount = 20) {
   </script>
 </body>
 </html>
+
 
 
 
