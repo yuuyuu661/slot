@@ -200,7 +200,7 @@ async function fetchSessionData() {
   }
 
    try {
-    const response = await fetch(`${API_BASE}/api/session?session=${sessionId}`);
+    const response = await fetch(${API_BASE}/api/session?session=${sessionId});
     if (!response.ok) {
       throw new Error("セッションが無効または期限切れです。");
     }
@@ -241,17 +241,13 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     function setupReels() {
-  reels.forEach((reel, i) => {
-    const container = reel.querySelector('.symbols');
-    container.innerHTML = '';
-    for (let j = 0; j < 20; j++) container.appendChild(createSymbolDiv(getRandomSymbol()));
-    container.style.top = "0px";
-
-    // 🔒 STOPボタンを無効化
-    const stopBtn = document.querySelector(`.stop-btn[data-index="${i}"]`);
-    if (stopBtn) stopBtn.disabled = true;
-  });
-}
+      reels.forEach(reel => {
+        const container = reel.querySelector('.symbols');
+        container.innerHTML = '';
+        for (let i = 0; i < 20; i++) container.appendChild(createSymbolDiv(getRandomSymbol()));
+        container.style.top = "0px";
+      });
+    }
 
     function startReel(index) {
       const container = reels[index].querySelector('.symbols');
@@ -355,7 +351,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }, 100);
 
   coins += totalWin * (inBonus ? 2 : 1);
-  resultEl.textContent = results.map(r => `「${['上','中','下'][r.row]}段:${r.symbol}x${r.count}」`).join(' / ') + `（${totalWin}コイン）`;
+  resultEl.textContent = results.map(r => 「${['上','中','下'][r.row]}段:${r.symbol}x${r.count}」).join(' / ') + （${totalWin}コイン）;
 } else {
   setTimeout(() => {
     loseSound.currentTime = 0;
@@ -431,20 +427,15 @@ function dropCoins(amount = 20) {
 }
      document.getElementById("cashoutBtn").addEventListener("click", async () => {
   const sessionId = new URLSearchParams(window.location.search).get("session");
-  const coinsToCashout = coins;
-  const cashoutBtn = document.getElementById("cashoutBtn");
+  const coinsToCashout = coins; // ← グローバル変数
 
   if (!sessionId) {
     alert("セッションが無効です。URLに ?session=xxx が必要です。");
     return;
   }
 
-  // 🔒 ボタンを一度だけ押せるように制御
-  cashoutBtn.disabled = true;
-  cashoutBtn.textContent = "送信中...";
-
   try {
-    const res = await fetch(`${API_BASE}/api/cashout`, {
+    const res = await fetch(${API_BASE}/api/cashout, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ session: sessionId, coins: coinsToCashout })
@@ -455,12 +446,9 @@ function dropCoins(amount = 20) {
       throw new Error(errData?.error || "サーバーエラー");
     }
 
-    alert(`✅ 清算が完了しました！（${coinsToCashout} Spt）\nウィンドウを手動で閉じてください。`);
-    cashoutBtn.textContent = "✅ 完了しました";
+    alert(✅ 清算が完了しました！（${coinsToCashout} Spt）\nウィンドウを手動で閉じてください。);
   } catch (err) {
     alert("❌ 清算エラー: " + err.message);
-    cashoutBtn.disabled = false;
-    cashoutBtn.textContent = "清算";
   }
 });
     document.querySelectorAll('.stop-btn').forEach(btn => {
@@ -480,21 +468,9 @@ function dropCoins(amount = 20) {
       setupReels();
       spinningFlags = Array(reelCount).fill(true);
       for (let i = 0; i < reelCount; i++) startReel(i);
-      document.querySelectorAll('.stop-btn').forEach(btn => {
-      btn.disabled = false;
     });
+
+    setupReels();
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
