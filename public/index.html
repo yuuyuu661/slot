@@ -189,7 +189,7 @@
     }, { once: true });
   });
 });
-const API_BASE = "https://bo4-production.up.railway.app";
+const API_BASE = "https://bo4-production.up.railway.app"; // ← Flaskの公開URLをここに変更
 
 async function fetchSessionData() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -427,20 +427,28 @@ function dropCoins(amount = 20) {
 }
      document.getElementById("cashoutBtn").addEventListener("click", async () => {
   const sessionId = new URLSearchParams(window.location.search).get("session");
-  const coinsToCashout = coins; // ← グローバル変数を直接参照
+  const coinsToCashout = coins; // ← グローバル変数
+
+  if (!sessionId) {
+    alert("セッションが無効です。URLに ?session=xxx が必要です。");
+    return;
+  }
 
   try {
-    const res = await fetch("/api/cashout", {
+    const res = await fetch(`${API_BASE}/api/cashout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ session: sessionId, coins: coinsToCashout })
     });
 
-    if (!res.ok) throw new Error("サーバーエラー");
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData?.error || "サーバーエラー");
+    }
 
-    alert(`清算が完了しました！（${coinsToCashout} Spt）\nウィンドウを手動で閉じてください。`);
+    alert(`✅ 清算が完了しました！（${coinsToCashout} Spt）\nウィンドウを手動で閉じてください。`);
   } catch (err) {
-    alert("清算エラー: " + err.message);
+    alert("❌ 清算エラー: " + err.message);
   }
 });
     document.querySelectorAll('.stop-btn').forEach(btn => {
@@ -466,6 +474,7 @@ function dropCoins(amount = 20) {
   </script>
 </body>
 </html>
+
 
 
 
